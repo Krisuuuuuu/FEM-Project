@@ -11,8 +11,11 @@ namespace FEM_Project
     {
         static void Main(string[] args)
         {
-            FEMCalculator fEMCalculator = new FEMCalculator();
-            fEMCalculator.CreateGrid();
+            //FEMCalculator fEMCalculator = new FEMCalculator();
+            //fEMCalculator.CreateGrid();
+
+            HMatrixCalculator hMatrixCalculator = new HMatrixCalculator();  
+
             Console.ReadKey();
         }
     }

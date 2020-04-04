@@ -52,7 +52,11 @@
     <Compile Include="Classes\GlobalData.cs" />
     <Compile Include="Classes\Grid.cs" />
     <Compile Include="Classes\GridManager.cs" />
+    <Compile Include="Classes\HMatrixCalculator.cs" />
+    <Compile Include="Classes\JacobiTransformationManager.cs" />
     <Compile Include="Classes\Node.cs" />
+    <Compile Include="Classes\UniversalElement.cs" />
+    <Compile Include="Classes\UniversalElementFunctions.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
