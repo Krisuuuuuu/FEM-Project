@@ -20,10 +20,9 @@ namespace FEM_Project.Classes
         public double[,] NValuesMatrix{ get; private set; }
         public double[] TabOfDeterminants { get; private set; }
 
+
         public JacobiTransformationManager()
         {
-            XValues = new double[4]{ 0, 0.025, 0.025, 0};
-            YValues = new double[4] { 0, 0, 0.025, 0.025 };
             DXDKsi = new double[4];
             DYDKsi = new double[4];
             DXDEta = new double[4];
@@ -32,9 +31,13 @@ namespace FEM_Project.Classes
             DNDYValuesMatrix = new double[4, 4];
             TabOfDeterminants = new double[4];
             NValuesMatrix = universalElement.NValuesMatrix;
-            JacobiTransformation();
         }
 
+        public void UpdateTabsOfCoordinates(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        {
+            XValues = new double[4] { x1, x2, x3, x4 };
+            YValues = new double[4] { y1, y2, y3, y4 };
+        }
         private void CalculateDXDKsi()
         {
             for(int i = 0; i<4; i++)
@@ -165,13 +168,30 @@ namespace FEM_Project.Classes
             }
         }
 
-        public void JacobiTransformation()
+        private void ClearAllComponents()
         {
+            DXDKsi = new double[4];
+            DYDKsi = new double[4];
+            DXDEta = new double[4];
+            DYDEta = new double[4];
+            DNDXValuesMatrix = new double[4, 4];
+            DNDYValuesMatrix = new double[4, 4];
+            TabOfDeterminants = new double[4];
+        }
+
+        public void CalculateMatricesOfDerivatives(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        {
+            ClearAllComponents();
+            UpdateTabsOfCoordinates(x1, x2, x3, x4, y1, y2, y3, y4);
+
             CalculateDXDKsi();
             CalculateDYDKsi();
             CalculateDXDEta();
             CalculateDYDEta();
+        }
 
+        public void JacobiTransformation()
+        {
             double [,] tempMatrix = new double[2, 2];
             double det;
 

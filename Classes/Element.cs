@@ -10,10 +10,15 @@ namespace FEM_Project.Classes
     {
         public Node[] Id { get; set; } = new Node[4];
 
+        public double[,] HMatrix { get; set; }
+        public double[,] CMatrix { get; set; }
+
         public Element()
         {
 
         }
+
+        
 
     }
 }

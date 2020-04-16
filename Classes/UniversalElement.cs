@@ -20,7 +20,6 @@ namespace FEM_Project.Classes
         {
             KsiValues = new double[4] {-1/(Math.Sqrt(3)), 1 / (Math.Sqrt(3)), 1 / (Math.Sqrt(3)), -1 / (Math.Sqrt(3)) };
             EtaValues = new double[4] { -1 / (Math.Sqrt(3)), -1 / (Math.Sqrt(3)), 1 / (Math.Sqrt(3)), 1 / (Math.Sqrt(3)) };
-
             NValuesMatrix = new double[4, 4];
             DNDKsiValuesMatrix = new double[4, 4];
             DNDEtaValuesMatrix = new double[4, 4];

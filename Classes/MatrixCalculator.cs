@@ -19,9 +19,6 @@ namespace FEM_Project.Classes
         private double[,] C2Matrix = new double[4, 4];
         private double[,] C3Matrix = new double[4, 4];
         private double[,] C4Matrix = new double[4, 4];
-        public double[,] HMatrix { get; private set; }
-        public double[,] CMatrix { get; private set; }
-
 
         private const double KFACTOR = 30;
         private const double C = 700;
@@ -29,9 +26,7 @@ namespace FEM_Project.Classes
 
         public MatrixCalculator()
         {
-            HMatrix = new double[4, 4];
-            CalculateHMatrix();
-            CalculateCMatrix();
+
         }
 
         private void FillTempVectors(int index, ref double[] tempX, ref double[] tempY, ref double[] transposedX, ref double[] transposedY)
@@ -132,15 +127,19 @@ namespace FEM_Project.Classes
             
             return result;
         }
-        private void CalculateHMatrix()
+        public double[,] CalculateHMatrix(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
         {
+            double[,] hMatrix = new double[4, 4];
             double[,] tempHMatrix = new double[4, 4];
             double[] tempX = new double[4];
             double[] tempY = new double[4];
             double[] tempTransposedX = new double[4];
             double[] tempTransposedY = new double[4];
 
-            HMatrix = CreateZerosMatrix();
+            jacobiTransformationManager.CalculateMatricesOfDerivatives(x1, x2, x3, x4, y1, y2, y3, y4);
+            jacobiTransformationManager.JacobiTransformation();
+
+            hMatrix = CreateZerosMatrix();
             double det;
 
             for (int i=0; i<4; i++)
@@ -149,24 +148,27 @@ namespace FEM_Project.Classes
                 det = jacobiTransformationManager.TabOfDeterminants[i];
 
                 tempHMatrix = CalculateInternalHMatrices(tempX, tempY, tempTransposedX, tempTransposedY, det);
-                HMatrix = SumTwoMatrices(HMatrix, tempHMatrix);
+                hMatrix = SumTwoMatrices(hMatrix, tempHMatrix);
             }
 
+            return hMatrix;
 
         }
-
-        private double CalculateFactorForCMatrix(double det, double c, double ro)
+        private double CalculateFactorForCMatrix(double det)
         {
-            return det * c * ro;
+            return det * C * RO;
         }
 
-        private void CalculateCMatrix()
+        public double[,] CalculateCMatrix(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
         {
+            double[,] cMatrix = new double[4, 4];
             double[,] tempCMatrix = new double[4, 4];
             double[] temp = new double[4];
             double[] tempTransposed = new double[4];
 
-            CMatrix = CreateZerosMatrix();
+            jacobiTransformationManager.CalculateMatricesOfDerivatives(x1, x2, x3, x4, y1, y2, y3, y4);
+            jacobiTransformationManager.JacobiTransformation();
+            cMatrix = CreateZerosMatrix();
             double det;
             double factor;
 
@@ -175,10 +177,12 @@ namespace FEM_Project.Classes
                 FillTempVectors(i, ref temp, ref tempTransposed);
                 det = jacobiTransformationManager.TabOfDeterminants[i];
                 tempCMatrix = MultiplyTwoVectors(temp, tempTransposed);
-                factor = CalculateFactorForCMatrix(det, C, RO);
+                factor = CalculateFactorForCMatrix(det);
                 tempCMatrix = MultiplyNumberAndMatrix(factor, tempCMatrix);
-                CMatrix = SumTwoMatrices(CMatrix, tempCMatrix);
+                cMatrix = SumTwoMatrices(cMatrix, tempCMatrix);
             }
+
+            return cMatrix;
 
         }
     }

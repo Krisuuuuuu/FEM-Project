@@ -48,7 +48,7 @@ namespace FEM_Project.Classes
             int j = 0;
             int counter = 0;
 
-            for (int i = 0; i <= nodesNumber; i++)
+            for (int i = 0; i < nodesNumber; i++)
             {
                 try
                 {
@@ -59,6 +59,11 @@ namespace FEM_Project.Classes
                     {
                         counter = 0;
                         continue;
+                    }
+
+                    if (j == elementsNumber)
+                    {
+                        break;
                     }
 
                     element.Id[k] = grid.Nodes[i];
@@ -72,13 +77,10 @@ namespace FEM_Project.Classes
                     k++;
                     element.Id[k] = grid.Nodes[i + 1];
                     Console.WriteLine("Element " + j + " otrzymal wezel " + (i + 1) + " na miejscu " + k);
+
+                    grid.Elements[j] = element;
                     k = 0;
                     j++;
-
-                    if(j == elementsNumber)
-                    {
-                        break;
-                    }
 
                 }
                 catch (IndexOutOfRangeException)
