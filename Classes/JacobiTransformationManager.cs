@@ -17,7 +17,7 @@ namespace FEM_Project.Classes
         public double[] DYDEta { get; private set; }
         public double[,] DNDXValuesMatrix { get; private set; }
         public double[,] DNDYValuesMatrix { get; private set; }
-
+        public double[,] NValuesMatrix{ get; private set; }
         public double[] TabOfDeterminants { get; private set; }
 
         public JacobiTransformationManager()
@@ -31,6 +31,7 @@ namespace FEM_Project.Classes
             DNDXValuesMatrix = new double[4, 4];
             DNDYValuesMatrix = new double[4, 4];
             TabOfDeterminants = new double[4];
+            NValuesMatrix = universalElement.NValuesMatrix;
             JacobiTransformation();
         }
 

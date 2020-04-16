@@ -14,7 +14,7 @@ namespace FEM_Project
             //FEMCalculator fEMCalculator = new FEMCalculator();
             //fEMCalculator.CreateGrid();
 
-            HMatrixCalculator hMatrixCalculator = new HMatrixCalculator();  
+            MatrixCalculator hMatrixCalculator = new MatrixCalculator();  
 
             Console.ReadKey();
         }

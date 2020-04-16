@@ -12,7 +12,6 @@ namespace FEM_Project.Classes
 
         public double[] KsiValues { get; private set; }
         public double[] EtaValues { get; private set; }
-
         public double[,] NValuesMatrix { get; private set; }
         public double[,] DNDKsiValuesMatrix { get; set; }
         public double[,] DNDEtaValuesMatrix { get; set; }

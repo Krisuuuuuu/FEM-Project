@@ -11,7 +11,6 @@ namespace FEM_Project.Classes
         public double X { get; set; }
         public double Y { get; set; }
         public double Temp { get; set; }
-
         public bool BoundanaryCondition { get; set; }
         public Node()
         {
