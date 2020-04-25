@@ -32,9 +32,10 @@ namespace FEM_Project.Classes
                 {
                     Node node = new Node();
                     grid.Nodes[k] = node;
+                    grid.Nodes[k].NodeId = k;
                     grid.Nodes[k].X = i * DistanceBetweenX;
                     grid.Nodes[k].Y = j * DistanceBetweenY;
-                    Console.WriteLine("Node " + k + " (" + grid.Nodes[k].X + "," + grid.Nodes[k].Y + ")");
+                    Console.WriteLine("Node " + grid.Nodes[k].NodeId + " (" + grid.Nodes[k].X + "," + grid.Nodes[k].Y + ")");
                     k++;
                 }
             }

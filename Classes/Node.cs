@@ -8,6 +8,7 @@ namespace FEM_Project.Classes
 {
     public class Node
     {
+        public int NodeId { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Temp { get; set; }
@@ -20,8 +21,9 @@ namespace FEM_Project.Classes
             BoundanaryCondition = false;
         }
 
-        public Node(int x, int y, double temp, bool boundaryCondition)
+        public Node(int id, int x, int y, double temp, bool boundaryCondition)
         {
+            NodeId = id;
             X = x;
             Y = y;
             temp = Temp;

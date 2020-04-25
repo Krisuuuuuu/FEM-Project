@@ -20,7 +20,7 @@ namespace FEM_Project.Classes
         private double[,] C3Matrix = new double[4, 4];
         private double[,] C4Matrix = new double[4, 4];
 
-        private const double KFACTOR = 30;
+        private const double KFACTOR = 25;
         private const double C = 700;
         private const double RO = 7800;
 
@@ -112,7 +112,6 @@ namespace FEM_Project.Classes
             }
 
             return result;
-
         }
         private double[,] CalculateInternalHMatrices(double[] tempX, double[] tempY, double[] transposedX, double[] transposedY, double det)
         {
@@ -165,12 +164,12 @@ namespace FEM_Project.Classes
             double[,] tempCMatrix = new double[4, 4];
             double[] temp = new double[4];
             double[] tempTransposed = new double[4];
+            double det;
+            double factor;
 
             jacobiTransformationManager.CalculateMatricesOfDerivatives(x1, x2, x3, x4, y1, y2, y3, y4);
             jacobiTransformationManager.JacobiTransformation();
             cMatrix = CreateZerosMatrix();
-            double det;
-            double factor;
 
             for (int i = 0; i < 4; i++)
             {

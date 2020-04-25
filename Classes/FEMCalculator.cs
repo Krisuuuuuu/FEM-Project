@@ -31,7 +31,7 @@ namespace FEM_Project.Classes
 
             if(globalData != null)
             {
-                grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber);
+                grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.CalculateDistance(globalData.Width, globalData.Height, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.AssignNodesToElements(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.NodesNumber);
@@ -67,6 +67,7 @@ namespace FEM_Project.Classes
             }
         }
 
+
         private void CalculateInternalElementMatrices(int index)
         {
             grid.Elements[index].HMatrix = matrixCalculator.CalculateHMatrix(xNodesCoordinates[0], xNodesCoordinates[1], xNodesCoordinates[2], xNodesCoordinates[3],
@@ -86,9 +87,8 @@ namespace FEM_Project.Classes
                 CalculateInternalElementMatrices(i);
             }
 
-            //double[,] temp1 = matrixCalculator.CalculateHMatrix(0, 0.025, 0.025, 0, 0, 0, 0.025, 0.025);
-            //double[,] temp2 = matrixCalculator.CalculateCMatrix(0, 0.025, 0.025, 0, 0, 0, 0.025, 0.025);
-
+            grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
+            grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
         }
 
     }
