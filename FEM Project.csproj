@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Enums\Side.cs" />
+    <Compile Include="Classes\Models\Edge.cs" />
     <Compile Include="Classes\Models\Element.cs" />
     <Compile Include="Classes\Calculators\FEMCalculator.cs" />
     <Compile Include="Classes\Tools\FileManager.cs" />

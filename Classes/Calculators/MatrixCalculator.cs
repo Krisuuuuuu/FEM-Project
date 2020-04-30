@@ -24,11 +24,6 @@ namespace FEM_Project.Classes
         private const double C = 700;
         private const double RO = 7800;
 
-        public MatrixCalculator()
-        {
-
-        }
-
         private void FillTempVectors(int index, ref double[] tempX, ref double[] tempY, ref double[] transposedX, ref double[] transposedY)
         {
             for(int i = 0; i<4; i++)

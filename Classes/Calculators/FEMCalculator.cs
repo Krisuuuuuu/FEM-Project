@@ -75,7 +75,6 @@ namespace FEM_Project.Classes
                 yNodesCoordinates[0], yNodesCoordinates[1], yNodesCoordinates[2], yNodesCoordinates[3]);
         }
 
-
         public void Calculate()
         {
             CreateGrid();
