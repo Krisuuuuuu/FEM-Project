@@ -21,13 +21,12 @@ namespace FEM_Project.Classes
             BoundanaryCondition = false;
         }
 
-        public Node(int id, int x, int y, double temp, bool boundaryCondition)
+        public Node(int id, int x, int y, double temp)
         {
             NodeId = id;
             X = x;
             Y = y;
             temp = Temp;
-            boundaryCondition = BoundanaryCondition;
         }
     }
 }

@@ -33,9 +33,8 @@ namespace FEM_Project.Classes
             {
                 grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.CalculateDistance(globalData.Width, globalData.Height, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
-                gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
+                gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.Width, globalData.Height);
                 gridManager.AssignNodesToElements(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.NodesNumber);
-
             }
             else
             {

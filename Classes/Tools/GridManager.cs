@@ -17,13 +17,26 @@ namespace FEM_Project.Classes
 
             return elementsNumber;
         }
+
+        private bool SetBoundaryCondition(double width, double height, Node node)
+        {
+            if(node.X == 0 || node.X == width || node.Y == 0 || node.Y == height)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void CalculateDistance(double width, double height, int heightNodesNumber, int widthNodesNumber)
         {
             DistanceBetweenX = width / (widthNodesNumber - 1);
             DistanceBetweenY = height / (heightNodesNumber - 1);
         }
 
-        public void GenerateGrid(Grid grid, int heightNodesNumber, int widthNodesNumber)
+        public void GenerateGrid(Grid grid, int heightNodesNumber, int widthNodesNumber, double width, double height)
         {
             int k = 0;
             for(int i = 0; i<heightNodesNumber; i++)
@@ -35,6 +48,7 @@ namespace FEM_Project.Classes
                     grid.Nodes[k].NodeId = k;
                     grid.Nodes[k].X = i * DistanceBetweenX;
                     grid.Nodes[k].Y = j * DistanceBetweenY;
+                    grid.Nodes[k].BoundanaryCondition = SetBoundaryCondition(width, height, grid.Nodes[k]);                  
                     Console.WriteLine("Node " + grid.Nodes[k].NodeId + " (" + grid.Nodes[k].X + "," + grid.Nodes[k].Y + ")");
                     k++;
                 }

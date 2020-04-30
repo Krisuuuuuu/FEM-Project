@@ -46,18 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Element.cs" />
-    <Compile Include="Classes\FEMCalculator.cs" />
-    <Compile Include="Classes\FileManager.cs" />
-    <Compile Include="Classes\GlobalData.cs" />
-    <Compile Include="Classes\Grid.cs" />
-    <Compile Include="Classes\GridManager.cs" />
-    <Compile Include="Classes\MatricesAggregator.cs" />
-    <Compile Include="Classes\MatrixCalculator.cs" />
-    <Compile Include="Classes\JacobiTransformationManager.cs" />
-    <Compile Include="Classes\Node.cs" />
-    <Compile Include="Classes\UniversalElement.cs" />
-    <Compile Include="Classes\UniversalElementFunctions.cs" />
+    <Compile Include="Classes\Models\Element.cs" />
+    <Compile Include="Classes\Calculators\FEMCalculator.cs" />
+    <Compile Include="Classes\Tools\FileManager.cs" />
+    <Compile Include="Classes\Models\GlobalData.cs" />
+    <Compile Include="Classes\Models\Grid.cs" />
+    <Compile Include="Classes\Tools\GridManager.cs" />
+    <Compile Include="Classes\Calculators\MatricesAggregator.cs" />
+    <Compile Include="Classes\Calculators\MatrixCalculator.cs" />
+    <Compile Include="Classes\Calculators\JacobiTransformationManager.cs" />
+    <Compile Include="Classes\Models\Node.cs" />
+    <Compile Include="Classes\Models\UniversalElement.cs" />
+    <Compile Include="Classes\Tools\UniversalElementFunctions.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

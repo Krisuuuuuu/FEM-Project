@@ -9,7 +9,6 @@ namespace FEM_Project.Classes
     public class UniversalElement
     {
         private UniversalElementFunctions universalElementFunctions = new UniversalElementFunctions();
-
         public double[] KsiValues { get; private set; }
         public double[] EtaValues { get; private set; }
         public double[,] NValuesMatrix { get; private set; }
