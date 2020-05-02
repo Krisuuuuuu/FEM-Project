@@ -85,6 +85,8 @@ namespace FEM_Project.Classes
                 CalculateInternalElementMatrices(i);
             }
 
+            matrixCalculator.CalculatePVector(0, 0.025, 0.025, 0, 0, 0, 0.025, 0.025);
+
             grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
             grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
         }

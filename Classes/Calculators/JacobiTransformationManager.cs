@@ -18,8 +18,8 @@ namespace FEM_Project.Classes
         public double[,] DNDXValuesMatrix { get; private set; }
         public double[,] DNDYValuesMatrix { get; private set; }
         public double[,] NValuesMatrix{ get; private set; }
+        public Edge[] Edges { get; private set; }
         public double[] TabOfDeterminants { get; private set; }
-
 
         public JacobiTransformationManager()
         {
@@ -30,14 +30,47 @@ namespace FEM_Project.Classes
             DNDXValuesMatrix = new double[4, 4];
             DNDYValuesMatrix = new double[4, 4];
             TabOfDeterminants = new double[4];
+            Edges = universalElement.Edges;
             NValuesMatrix = universalElement.NValuesMatrix;
+        }
+        private void ClearAllComponents()
+        {
+            DXDKsi = new double[4];
+            DYDKsi = new double[4];
+            DXDEta = new double[4];
+            DYDEta = new double[4];
+            DNDXValuesMatrix = new double[4, 4];
+            DNDYValuesMatrix = new double[4, 4];
+            TabOfDeterminants = new double[4];
         }
 
         public void UpdateTabsOfCoordinates(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
         {
-            XValues = new double[4] { x1, x2, x3, x4 };
-            YValues = new double[4] { y1, y2, y3, y4 };
+            XValues = new double[4] { 0, 0.025, 0.025, 0};
+            YValues = new double[4] { 0, 0, 0.025, 0.025};
+
+            //XValues = new double[4] { x1, x2, x3, x4 };
+            //YValues = new double[4] { y1, y2, y3, y4 };
         }
+
+        public void CalculateDeterminantsForPVector(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        {
+            ClearAllComponents();
+            UpdateTabsOfCoordinates(x1, x2, x3, x4, y1, y2, y3, y4);
+
+            for(int i=0; i<4; i++)
+            {
+                if(i==3)
+                {
+                    TabOfDeterminants[i] = CalculateLengthInGlobalCoordinateSystem(XValues[3], XValues[0], YValues[3], YValues[0])/2;
+                }
+                else
+                {
+                    TabOfDeterminants[i] = CalculateLengthInGlobalCoordinateSystem(XValues[i], XValues[i + 1], YValues[i], YValues[i + 1]) / 2;
+                }
+            }
+        }
+
         private void CalculateDXDKsi()
         {
             for(int i = 0; i<4; i++)
@@ -98,6 +131,11 @@ namespace FEM_Project.Classes
             }
 
             return det;
+        }
+
+        private double CalculateLengthInGlobalCoordinateSystem(double x1, double x2, double y1, double y2)
+        {
+            return Math.Sqrt(Math.Pow(x2-x1, 2) + Math.Pow(y2-y1, 2));
         }
 
         private double[,] FillTempMatrix(int index, double [,] matrix)
@@ -168,16 +206,7 @@ namespace FEM_Project.Classes
             }
         }
 
-        private void ClearAllComponents()
-        {
-            DXDKsi = new double[4];
-            DYDKsi = new double[4];
-            DXDEta = new double[4];
-            DYDEta = new double[4];
-            DNDXValuesMatrix = new double[4, 4];
-            DNDYValuesMatrix = new double[4, 4];
-            TabOfDeterminants = new double[4];
-        }
+
 
         public void CalculateMatricesOfDerivatives(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
         {
@@ -207,6 +236,5 @@ namespace FEM_Project.Classes
                 Fill2DMainMatrices(i, tempMatrix);
             }
         }
-
     }
 }

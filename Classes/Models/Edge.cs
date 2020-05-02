@@ -11,8 +11,8 @@ namespace FEM_Project.Classes
     {
         public double[] KsiValues { get; private set; }
         public double[] EtaValues { get; private set; }      
-        public Side Side { get; private set; }
         public double[,] NValuesMatrix { get; private set; }
+        public Side Side { get; set; }
 
         public Edge(double[] ksiValues, double[] etaValues, Side side)
         {
