@@ -20,6 +20,7 @@ namespace FEM_Project.Classes
         public double[,] NValuesMatrix{ get; private set; }
         public Edge[] Edges { get; private set; }
         public double[] TabOfDeterminants { get; private set; }
+        public double[] TabOfDeterminantsForPVector { get; private set; }
 
         public JacobiTransformationManager()
         {
@@ -30,6 +31,7 @@ namespace FEM_Project.Classes
             DNDXValuesMatrix = new double[4, 4];
             DNDYValuesMatrix = new double[4, 4];
             TabOfDeterminants = new double[4];
+            TabOfDeterminantsForPVector = new double[4];
             Edges = universalElement.Edges;
             NValuesMatrix = universalElement.NValuesMatrix;
         }
@@ -42,31 +44,29 @@ namespace FEM_Project.Classes
             DNDXValuesMatrix = new double[4, 4];
             DNDYValuesMatrix = new double[4, 4];
             TabOfDeterminants = new double[4];
+            TabOfDeterminantsForPVector = new double[4];
         }
 
         public void UpdateTabsOfCoordinates(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
         {
-            XValues = new double[4] { 0, 0.025, 0.025, 0};
-            YValues = new double[4] { 0, 0, 0.025, 0.025};
+            //XValues = new double[4] { 0, 0.025, 0.025, 0};
+            //YValues = new double[4] { 0, 0, 0.025, 0.025};
 
-            //XValues = new double[4] { x1, x2, x3, x4 };
-            //YValues = new double[4] { y1, y2, y3, y4 };
+            XValues = new double[4] { x1, x2, x3, x4 };
+            YValues = new double[4] { y1, y2, y3, y4 };
         }
 
-        public void CalculateDeterminantsForPVector(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        public void CalculateDeterminantsForPVector()
         {
-            ClearAllComponents();
-            UpdateTabsOfCoordinates(x1, x2, x3, x4, y1, y2, y3, y4);
-
             for(int i=0; i<4; i++)
             {
                 if(i==3)
                 {
-                    TabOfDeterminants[i] = CalculateLengthInGlobalCoordinateSystem(XValues[3], XValues[0], YValues[3], YValues[0])/2;
+                    TabOfDeterminantsForPVector[i] = CalculateLengthInGlobalCoordinateSystem(XValues[3], XValues[0], YValues[3], YValues[0])/2;
                 }
                 else
                 {
-                    TabOfDeterminants[i] = CalculateLengthInGlobalCoordinateSystem(XValues[i], XValues[i + 1], YValues[i], YValues[i + 1]) / 2;
+                    TabOfDeterminantsForPVector[i] = CalculateLengthInGlobalCoordinateSystem(XValues[i], XValues[i + 1], YValues[i], YValues[i + 1]) / 2;
                 }
             }
         }

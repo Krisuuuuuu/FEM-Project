@@ -174,10 +174,12 @@ namespace FEM_Project.Classes
             return result;
         }
 
-        public double[,] CalculateHMatrix(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        public double[,] CalculateHMatrix(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4, bool[] flags)
         {
-            double[,] hMatrix = new double[4, 4];
-            double[,] tempHMatrix = new double[4, 4];
+            double[,] hMatrix = CreateZerosMatrix();
+            double[,] tempHMatrix = CreateZerosMatrix();
+            double[,] pMatrix = CreateZerosMatrix();
+            double[,] tempPMatrix = CreateZerosMatrix();
             double[] tempX = new double[4];
             double[] tempY = new double[4];
             double[] tempTransposedX = new double[4];
@@ -197,7 +199,15 @@ namespace FEM_Project.Classes
                 factor = CalculateFactorForHMatrix(det);
                 tempHMatrix = CalculateInternalMatrices(tempX, tempY, tempTransposedX, tempTransposedY, factor);
                 hMatrix = SumTwoMatrices(hMatrix, tempHMatrix);
+
+                if(flags[i] == true)
+                {
+                    tempPMatrix = CalculatePVector(i);
+                    pMatrix = SumTwoMatrices(pMatrix, tempPMatrix);
+                }
             }
+
+            hMatrix = SumTwoMatrices(hMatrix, pMatrix);
 
             return hMatrix;
 
@@ -230,26 +240,20 @@ namespace FEM_Project.Classes
 
         }
 
-        public double[,] CalculatePVector(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4)
+        public double[,] CalculatePVector(int index)
         {
-            jacobiTransformationManager.CalculateDeterminantsForPVector(x1, x2, x3, x4, y1, y2, y3, y4);
-            double[,] pMatrix = new double[4, 4];
-            double[,] tempPMatrix = new double[4, 4];
+            jacobiTransformationManager.CalculateDeterminantsForPVector();
+            double[,] pMatrix = CreateZerosMatrix();
             pMatrix = CreateZerosMatrix();
-            tempPMatrix = CreateZerosMatrix();
             double[] tempP1 = new double[4];
             double[] tempTransposedP1 = new double[4];
             double[] tempP2 = new double[4];
             double[] tempTransposedP2 = new double[4];
             double det;
 
-            for (int i = 0; i < jacobiTransformationManager.Edges.Length; i++)
-            {
-                det = jacobiTransformationManager.TabOfDeterminants[i];
-                FillTempVectors(jacobiTransformationManager.Edges[i], i, ref tempP1, ref tempTransposedP1, ref tempP2, ref tempTransposedP2);
-                tempPMatrix = CalculateInternalMatrices(tempP1, tempP2, tempTransposedP1, tempTransposedP2, twoPointsGaussianFactors, det);
-                pMatrix = SumTwoMatrices(tempPMatrix, pMatrix);
-            }
+            det = jacobiTransformationManager.TabOfDeterminantsForPVector[index];
+            FillTempVectors(jacobiTransformationManager.Edges[index], index, ref tempP1, ref tempTransposedP1, ref tempP2, ref tempTransposedP2);
+            pMatrix = CalculateInternalMatrices(tempP1, tempP2, tempTransposedP1, tempTransposedP2, twoPointsGaussianFactors, det);
 
             return pMatrix;
         }

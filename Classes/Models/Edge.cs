@@ -12,13 +12,11 @@ namespace FEM_Project.Classes
         public double[] KsiValues { get; private set; }
         public double[] EtaValues { get; private set; }      
         public double[,] NValuesMatrix { get; private set; }
-        public Side Side { get; set; }
 
-        public Edge(double[] ksiValues, double[] etaValues, Side side)
+        public Edge(double[] ksiValues, double[] etaValues)
         {
             KsiValues = ksiValues;
             EtaValues = etaValues;
-            Side = side;
             NValuesMatrix = new double[2, 4];           
         }
 

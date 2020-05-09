@@ -48,7 +48,7 @@ namespace FEM_Project.Classes
                     grid.Nodes[k].NodeId = k;
                     grid.Nodes[k].X = i * DistanceBetweenX;
                     grid.Nodes[k].Y = j * DistanceBetweenY;
-                    grid.Nodes[k].BoundanaryCondition = SetBoundaryCondition(width, height, grid.Nodes[k]);                  
+                    grid.Nodes[k].BoundanaryCondition = SetBoundaryCondition(width, height, grid.Nodes[k]);
                     Console.WriteLine("Node " + grid.Nodes[k].NodeId + " (" + grid.Nodes[k].X + "," + grid.Nodes[k].Y + ")");
                     k++;
                 }
@@ -92,7 +92,7 @@ namespace FEM_Project.Classes
                     k++;
                     element.Id[k] = grid.Nodes[i + 1];
                     Console.WriteLine("Element " + j + " otrzymal wezel " + (i + 1) + " na miejscu " + k);
-
+                    SetBoundaryConditionEdgesFlags(element);
                     grid.Elements[j] = element;
                     k = 0;
                     j++;
@@ -103,6 +103,29 @@ namespace FEM_Project.Classes
                     continue;
                 }
              
+            }
+        }
+
+        public void SetBoundaryConditionEdgesFlags(Element element)
+        {
+            if(element.Id[0].BoundanaryCondition && element.Id[1].BoundanaryCondition)
+            {
+                element.EdgesBoundaryCondition[0] = true;
+            }
+
+            if(element.Id[1].BoundanaryCondition && element.Id[2].BoundanaryCondition)
+            {
+                element.EdgesBoundaryCondition[1] = true;
+            }
+
+            if (element.Id[2].BoundanaryCondition && element.Id[3].BoundanaryCondition)
+            {
+                element.EdgesBoundaryCondition[2] = true;
+            }
+
+            if (element.Id[3].BoundanaryCondition && element.Id[0].BoundanaryCondition)
+            {
+                element.EdgesBoundaryCondition[3] = true;
             }
         }
     }

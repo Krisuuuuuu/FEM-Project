@@ -88,7 +88,7 @@ namespace FEM_Project.Classes
 
             for (int i = 0; i < 8; i+=2)
             {
-                Edge edge = new Edge(tempKsi, tempEta, (Side)k);
+                Edge edge = new Edge(tempKsi, tempEta);
                 tempKsi[0] = KsiValuesForEdges[i]; 
                 tempKsi[1] = KsiValuesForEdges[i + 1];
                 tempEta[0] = EtaValuesForEdges[i];
