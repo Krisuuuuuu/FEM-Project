@@ -84,10 +84,10 @@ namespace FEM_Project.Classes
                     element.Id[k] = grid.Nodes[i];
                     Console.WriteLine("Element " + j + " otrzymal wezel " + i + " na miejscu " + k);
                     k++;
-                    element.Id[k] = grid.Nodes[i + 4];
+                    element.Id[k] = grid.Nodes[i + heightNodesNumber];
                     Console.WriteLine("Element " + j + " otrzymal wezel " + (i + 4) + " na miejscu " + k);
                     k++;
-                    element.Id[k] = grid.Nodes[i + 5];
+                    element.Id[k] = grid.Nodes[i + (heightNodesNumber+1)];
                     Console.WriteLine("Element " + j + " otrzymal wezel " + (i + 5) + " na miejscu " + k);
                     k++;
                     element.Id[k] = grid.Nodes[i + 1];

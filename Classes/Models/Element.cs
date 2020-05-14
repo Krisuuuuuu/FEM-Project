@@ -11,6 +11,7 @@ namespace FEM_Project.Classes
         public Node[] Id { get; set; }
         public double[,] HMatrix { get; set; }
         public double[,] CMatrix { get; set; }
+        public double[] PVector { get; set; }
 
         public bool[] EdgesBoundaryCondition;
 

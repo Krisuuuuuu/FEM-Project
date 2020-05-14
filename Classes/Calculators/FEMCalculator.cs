@@ -71,6 +71,7 @@ namespace FEM_Project.Classes
         {
             grid.Elements[index].HMatrix = matrixCalculator.CalculateHMatrix(xNodesCoordinates[0], xNodesCoordinates[1], xNodesCoordinates[2], xNodesCoordinates[3],
                 yNodesCoordinates[0], yNodesCoordinates[1], yNodesCoordinates[2], yNodesCoordinates[3], grid.Elements[index].EdgesBoundaryCondition);
+            grid.Elements[index].PVector = matrixCalculator.CalculatePVector(grid.Elements[index].EdgesBoundaryCondition);
             grid.Elements[index].CMatrix = matrixCalculator.CalculateCMatrix(xNodesCoordinates[0], xNodesCoordinates[1], xNodesCoordinates[2], xNodesCoordinates[3],
                 yNodesCoordinates[0], yNodesCoordinates[1], yNodesCoordinates[2], yNodesCoordinates[3]);
         }
@@ -87,6 +88,7 @@ namespace FEM_Project.Classes
 
             grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
             grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
+            grid.GlobalPVector = MatricesAggregator.AggregateLocalVectors(grid);
         }
 
     }

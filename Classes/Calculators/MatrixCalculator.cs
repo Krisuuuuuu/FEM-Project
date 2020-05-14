@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,13 +27,14 @@ namespace FEM_Project.Classes
         private const double ALPHA = 25;
         private const double C = 700;
         private const double RO = 7800;
+        private const double T0 = 1200;
 
         public MatrixCalculator()
         {
             twoPointsGaussianFactors = new double[2] { 1, 1 };
         }
 
-        private double CalculateFactorForInternalPMatrix(int index)
+        private double CalculateFactorForInternalHBCMatrix(int index)
         {
             return twoPointsGaussianFactors[index] * ALPHA;
         }
@@ -45,6 +47,11 @@ namespace FEM_Project.Classes
         private double CalculateFactorForCMatrix(double det)
         {
             return det * C * RO;
+        }
+
+        private double CalculateFactorForPVector(int index)
+        {
+            return twoPointsGaussianFactors[index] * ALPHA * T0;
         }
 
         private double[,] CreateZerosMatrix()
@@ -84,6 +91,15 @@ namespace FEM_Project.Classes
                 transposedTempP2[i] = edge.NValuesMatrix[1, i];
             }
 
+        }
+
+        private void FillTempVectors(Edge edge, int index, ref double[] tempP1, ref double[] tempP2)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                tempP1[i] = edge.NValuesMatrix[0, i];
+                tempP2[i] = edge.NValuesMatrix[1, i];
+            }
         }
 
         private void FillTempVectors(int index, ref double[] temp, ref double[] transposedTemp)
@@ -128,6 +144,17 @@ namespace FEM_Project.Classes
             return matrix;
         }
 
+        private double[] MultiplyNumberAndVector(double value, double[] vector)
+        {
+
+            for (int i = 0; i < 4; i++)
+            {
+                vector[i] = vector[i] * value;
+            }
+
+            return vector;
+        }
+
 
         private double [,] SumTwoMatrices(double[,] internalX, double[,] internalY)
         {
@@ -139,6 +166,18 @@ namespace FEM_Project.Classes
                 {
                     result[i, j] = internalX[i, j] + internalY[i, j];
                 }
+            }
+
+            return result;
+        }
+
+        private double[] SumTwoVectors(double[] internalX, double[] internalY)
+        {
+            double[] result = internalX;
+
+            for (int i = 0; i < 4; i++)
+            {
+                result[i] = internalX[i] + internalY[i];
             }
 
             return result;
@@ -160,8 +199,8 @@ namespace FEM_Project.Classes
             , double det)
         {
             double[,] result = CreateZerosMatrix();
-            double p1Factor = CalculateFactorForInternalPMatrix(0);
-            double p2Factor = CalculateFactorForInternalPMatrix(1);
+            double p1Factor = CalculateFactorForInternalHBCMatrix(0);
+            double p2Factor = CalculateFactorForInternalHBCMatrix(1);
 
             double[,] tempP1Matrix = MultiplyTwoVectors(tempP1, transposedP1);
             double[,] tempP2Matrix = MultiplyTwoVectors(tempP2, transposedP2);
@@ -174,12 +213,27 @@ namespace FEM_Project.Classes
             return result;
         }
 
+        private double[] CalculateInternalVector(double[] tempP1, double[] tempP2, double[] gaussianFactors, double det)
+        {
+            double[] result = new double[4] { 0, 0, 0, 0 };
+            double p1Factor = CalculateFactorForPVector(0);
+            double p2Factor = CalculateFactorForPVector(1);
+
+            tempP1 = MultiplyNumberAndVector(p1Factor, tempP1);
+            tempP2 = MultiplyNumberAndVector(p2Factor, tempP2);
+
+            result = SumTwoVectors(tempP1, tempP2);
+            result = MultiplyNumberAndVector(det, result);
+
+            return result;
+        }
+
         public double[,] CalculateHMatrix(double x1, double x2, double x3, double x4, double y1, double y2, double y3, double y4, bool[] flags)
         {
             double[,] hMatrix = CreateZerosMatrix();
             double[,] tempHMatrix = CreateZerosMatrix();
-            double[,] pMatrix = CreateZerosMatrix();
-            double[,] tempPMatrix = CreateZerosMatrix();
+            double[,] hBCMatrix = CreateZerosMatrix();
+            double[,] tempHBCMatrix = CreateZerosMatrix();
             double[] tempX = new double[4];
             double[] tempY = new double[4];
             double[] tempTransposedX = new double[4];
@@ -202,12 +256,12 @@ namespace FEM_Project.Classes
 
                 if(flags[i] == true)
                 {
-                    tempPMatrix = CalculatePVector(i);
-                    pMatrix = SumTwoMatrices(pMatrix, tempPMatrix);
+                    tempHBCMatrix = CalculateHBCMatrix(i);
+                    hBCMatrix = SumTwoMatrices(hBCMatrix, tempHBCMatrix);
                 }
             }
 
-            hMatrix = SumTwoMatrices(hMatrix, pMatrix);
+            hMatrix = SumTwoMatrices(hMatrix, hBCMatrix);
 
             return hMatrix;
 
@@ -239,23 +293,45 @@ namespace FEM_Project.Classes
             return cMatrix;
 
         }
-
-        public double[,] CalculatePVector(int index)
+        public double[,] CalculateHBCMatrix(int index)
         {
             jacobiTransformationManager.CalculateDeterminantsForPVector();
-            double[,] pMatrix = CreateZerosMatrix();
-            pMatrix = CreateZerosMatrix();
+            double[,] hBCMatrix = CreateZerosMatrix();
+            hBCMatrix = CreateZerosMatrix();
             double[] tempP1 = new double[4];
             double[] tempTransposedP1 = new double[4];
             double[] tempP2 = new double[4];
-            double[] tempTransposedP2 = new double[4];
+            double[] tempTransposedP2 = new double[4];          
+
+            double det = jacobiTransformationManager.TabOfDeterminantsForPVector[index];
+            FillTempVectors(jacobiTransformationManager.Edges[index], index, ref tempP1, ref tempTransposedP1, ref tempP2, ref tempTransposedP2);
+            hBCMatrix = CalculateInternalMatrices(tempP1, tempP2, tempTransposedP1, tempTransposedP2, twoPointsGaussianFactors, det);
+
+            return hBCMatrix;
+        }
+
+        public double[] CalculatePVector(bool[] flags)
+        {
+            jacobiTransformationManager.CalculateDeterminantsForPVector();
+            double[] pVector = new double[4] { 0, 0, 0, 0 };
+            double[] tempPVector = new double[4] { 0, 0, 0, 0 };
+
+            double[] tempP1 = new double[4];
+            double[] tempP2 = new double[4];
             double det;
 
-            det = jacobiTransformationManager.TabOfDeterminantsForPVector[index];
-            FillTempVectors(jacobiTransformationManager.Edges[index], index, ref tempP1, ref tempTransposedP1, ref tempP2, ref tempTransposedP2);
-            pMatrix = CalculateInternalMatrices(tempP1, tempP2, tempTransposedP1, tempTransposedP2, twoPointsGaussianFactors, det);
+            for(int i=0; i<4; i++)
+            {
+                if (flags[i] == true)
+                {
+                    det = jacobiTransformationManager.TabOfDeterminantsForPVector[i];
+                    FillTempVectors(jacobiTransformationManager.Edges[i], i, ref tempP1, ref tempP2);
+                    tempPVector = CalculateInternalVector(tempP1, tempP2, twoPointsGaussianFactors, det);
+                    pVector = SumTwoVectors(pVector, tempP1);
+                }
+            }
 
-            return pMatrix;
+            return pVector;
         }
 
     }

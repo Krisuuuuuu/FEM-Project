@@ -36,6 +36,24 @@ namespace FEM_Project.Classes
             return globalMatrix;
         }
 
+        public static double[] AggregateLocalVectors(Grid grid)
+        {
+            double[] globalVector = CreateZerosVector(grid);
+            int[] ids;
+
+            for (int i = 0; i < grid.Elements.Length; i++)
+            {
+                ids = GetNodesIds(grid, i);
+
+                for (int j = 0; j < 4; j++)
+                {
+                    globalVector[ids[j]] += grid.Elements[i].PVector[j];
+                }
+            }
+
+            return globalVector;
+        }
+
         private static int[] GetNodesIds(Grid grid, int index)
         {
             int[] ids = new int[4];
@@ -64,6 +82,18 @@ namespace FEM_Project.Classes
                 {
                     result[i, j] = 0;
                 }
+            }
+
+            return result;
+        }
+
+        private static double[] CreateZerosVector(Grid grid)
+        {
+            double[] result = new double[grid.Nodes.Length];
+
+            for(int i=0; i<grid.Nodes.Length; i++)
+            {
+                result[i] = 0;
             }
 
             return result;
