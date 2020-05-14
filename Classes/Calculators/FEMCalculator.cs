@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FEM_Project.Classes.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace FEM_Project.Classes
     {
         private FileManager fileManager;
         private GridManager gridManager;
+        private Printer printer;
         private Grid grid;
         private GlobalData globalData;
         private MatrixCalculator matrixCalculator;
@@ -20,6 +22,7 @@ namespace FEM_Project.Classes
         {
             fileManager = new FileManager();
             gridManager = new GridManager();
+            printer = new Printer();
             matrixCalculator = new MatrixCalculator();
             xNodesCoordinates = new double[4];
             yNodesCoordinates = new double[4];
@@ -89,6 +92,15 @@ namespace FEM_Project.Classes
             grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
             grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
             grid.GlobalPVector = MatricesAggregator.AggregateLocalVectors(grid);
+
+            printer.PrintElements(grid.Elements);
+            printer.PrintAllLocalHMatrices(grid.Elements);
+            printer.PrintAllLocalCMatrices(grid.Elements);
+            printer.PrintAllLocalPVectors(grid.Elements); 
+            printer.PrintMatrix(grid.GlobalHMatrix, 16, 16, "H Matrix");
+            printer.PrintMatrix(grid.GlobalCMatrix, 16, 16, "C Matrix");
+            printer.PrintVector(grid.GlobalPVector, grid.GlobalPVector.Length, "P Vector");
+            
         }
 
     }

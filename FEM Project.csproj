@@ -58,8 +58,10 @@
     <Compile Include="Classes\Calculators\JacobiTransformationManager.cs" />
     <Compile Include="Classes\Models\Node.cs" />
     <Compile Include="Classes\Models\UniversalElement.cs" />
+    <Compile Include="Classes\Tools\Printer.cs" />
     <Compile Include="Classes\Tools\UniversalElementFunctions.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
+    <Compile Include="Interfaces\IPrinter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
