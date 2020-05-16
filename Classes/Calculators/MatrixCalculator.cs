@@ -23,35 +23,45 @@ namespace FEM_Project.Classes
 
         private readonly double[] twoPointsGaussianFactors;
 
-        private const double KFACTOR = 25;
-        private const double ALPHA = 25;
-        private const double C = 700;
-        private const double RO = 7800;
-        private const double T0 = 1200;
+        private readonly double conductivity = 25;
+        private readonly double alpha = 25;
+        private readonly double specificHeat = 700;
+        private readonly double density = 7800;
+        private readonly double ambientTemperature = 1200;
 
         public MatrixCalculator()
         {
             twoPointsGaussianFactors = new double[2] { 1, 1 };
         }
 
+        public MatrixCalculator(double conductivity, double alpha, double specificHeat, double density, double ambientTemperature)
+        {
+            twoPointsGaussianFactors = new double[2] { 1, 1 };
+            this.conductivity = conductivity;
+            this.alpha = alpha;
+            this.specificHeat = specificHeat;
+            this.density = density;
+            this.ambientTemperature = ambientTemperature;
+        }
+
         private double CalculateFactorForInternalHBCMatrix(int index)
         {
-            return twoPointsGaussianFactors[index] * ALPHA;
+            return twoPointsGaussianFactors[index] * alpha;
         }
 
         private double CalculateFactorForHMatrix(double det)
         {
-            return det * KFACTOR;
+            return det * conductivity;
         }
 
         private double CalculateFactorForCMatrix(double det)
         {
-            return det * C * RO;
+            return det * specificHeat * density;
         }
 
         private double CalculateFactorForPVector(int index)
         {
-            return twoPointsGaussianFactors[index] * ALPHA * T0;
+            return twoPointsGaussianFactors[index] * alpha * ambientTemperature;
         }
 
         private double[,] CreateZerosMatrix()

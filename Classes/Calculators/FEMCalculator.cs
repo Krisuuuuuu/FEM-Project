@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,6 @@ namespace FEM_Project.Classes
             fileManager = new FileManager();
             gridManager = new GridManager();
             printer = new Printer();
-            matrixCalculator = new MatrixCalculator();
             xNodesCoordinates = new double[4];
             yNodesCoordinates = new double[4];
         }
@@ -35,6 +35,8 @@ namespace FEM_Project.Classes
             if(globalData != null)
             {
                 grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
+                matrixCalculator = new MatrixCalculator(globalData.Conductivity, globalData.Alpha, globalData.SpecificHeat,
+                    globalData.Density, globalData.AmbientTemperature);
                 gridManager.CalculateDistance(globalData.Width, globalData.Height, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.Width, globalData.Height);
                 gridManager.AssignNodesToElements(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.NodesNumber);

@@ -1,6 +1,14 @@
 {
+  "InitialTemperature": 100,
+  "SimulationTime": 500,
+  "Step": 50,
+  "AmbientTemperature": 1200,
+  "Alpha": 25,
   "Height": 0.1,
   "Width": 0.1,
   "HeightNodesNumber": 4,
-  "WidthNodesNumber": 4
+  "WidthNodesNumber": 4,
+  "SpecificHeat":  700,
+  "Conductivity": 25,
+  "Density": 7800
 }
