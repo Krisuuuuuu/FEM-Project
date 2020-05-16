@@ -1,4 +1,5 @@
-﻿using FEM_Project.Classes.Tools;
+﻿using FEM_Project.Classes.Calculators;
+using FEM_Project.Classes.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace FEM_Project.Classes
         private Grid grid;
         private GlobalData globalData;
         private MatrixCalculator matrixCalculator;
+        private EquationEvaluator equationEvaluator;
         private double[] xNodesCoordinates;
         private double[] yNodesCoordinates;
 
@@ -37,6 +39,7 @@ namespace FEM_Project.Classes
                 grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 matrixCalculator = new MatrixCalculator(globalData.Conductivity, globalData.Alpha, globalData.SpecificHeat,
                     globalData.Density, globalData.AmbientTemperature);
+                equationEvaluator = new EquationEvaluator(globalData.SimulationTime, globalData.Step, globalData.InitialTemperature);
                 gridManager.CalculateDistance(globalData.Width, globalData.Height, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.Width, globalData.Height);
                 gridManager.AssignNodesToElements(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.NodesNumber);
@@ -81,6 +84,24 @@ namespace FEM_Project.Classes
                 yNodesCoordinates[0], yNodesCoordinates[1], yNodesCoordinates[2], yNodesCoordinates[3]);
         }
 
+        private void AggregateLocalMatricesAndVectors()
+        {
+            grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
+            grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
+            grid.GlobalPVector = MatricesAggregator.AggregateLocalVectors(grid);
+        }
+
+        private void PrintResults()
+        {
+            printer.PrintElements(grid.Elements);
+            printer.PrintAllLocalHMatrices(grid.Elements);
+            printer.PrintAllLocalCMatrices(grid.Elements);
+            printer.PrintAllLocalPVectors(grid.Elements);
+            printer.PrintMatrix(grid.GlobalHMatrix, 16, 16, "H Matrix");
+            printer.PrintMatrix(grid.GlobalCMatrix, 16, 16, "C Matrix");
+            printer.PrintVector(grid.GlobalPVector, grid.GlobalPVector.Length, "P Vector");
+        }
+
         public void Calculate()
         {
             CreateGrid();
@@ -91,18 +112,9 @@ namespace FEM_Project.Classes
                 CalculateInternalElementMatrices(i);
             }
 
-            grid.GlobalHMatrix = MatricesAggregator.AggregateLocalMatrices(grid, true);
-            grid.GlobalCMatrix = MatricesAggregator.AggregateLocalMatrices(grid, false);
-            grid.GlobalPVector = MatricesAggregator.AggregateLocalVectors(grid);
-
-            printer.PrintElements(grid.Elements);
-            printer.PrintAllLocalHMatrices(grid.Elements);
-            printer.PrintAllLocalCMatrices(grid.Elements);
-            printer.PrintAllLocalPVectors(grid.Elements); 
-            printer.PrintMatrix(grid.GlobalHMatrix, 16, 16, "H Matrix");
-            printer.PrintMatrix(grid.GlobalCMatrix, 16, 16, "C Matrix");
-            printer.PrintVector(grid.GlobalPVector, grid.GlobalPVector.Length, "P Vector");
-            
+            AggregateLocalMatricesAndVectors();
+            equationEvaluator.EvaluateEquation(grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector, grid.GlobalPVector.Length);
+            PrintResults();
         }
 
     }

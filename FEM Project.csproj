@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Calculators\EquationEvaluator.cs" />
     <Compile Include="Classes\Models\Edge.cs" />
     <Compile Include="Classes\Models\Element.cs" />
     <Compile Include="Classes\Calculators\FEMCalculator.cs" />
