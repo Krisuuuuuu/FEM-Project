@@ -3,7 +3,7 @@
   "SimulationTime": 500,
   "Step": 50,
   "AmbientTemperature": 1200,
-  "Alpha": 300,
+  "Alpha": 25,
   "Height": 0.1,
   "Width": 0.1,
   "HeightNodesNumber": 4,

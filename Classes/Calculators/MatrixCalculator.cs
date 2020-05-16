@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FEM_Project.Classes.Calculators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FEM_Project.Classes
 {
-    public class MatrixCalculator
+    public class MatrixCalculator : MatrixManager
     {
         private JacobiTransformationManager jacobiTransformationManager = new JacobiTransformationManager();
 
@@ -64,21 +65,6 @@ namespace FEM_Project.Classes
             return twoPointsGaussianFactors[index] * alpha * ambientTemperature;
         }
 
-        protected double[,] CreateZerosMatrix(int sizeX, int sizeY)
-        {
-            double[,] result = new double[sizeX, sizeY];
-
-            for (int i = 0; i < sizeX; i++)
-            {
-                for (int j = 0; j < sizeY; j++)
-                {
-                    result[i, j] = 0;
-                }
-            }
-
-            return result;
-        }
-
         private void FillTempVectors(int index, ref double[] tempX, ref double[] tempY, ref double[] transposedX, ref double[] transposedY)
         {
             for(int i = 0; i<4; i++)
@@ -120,86 +106,6 @@ namespace FEM_Project.Classes
                 transposedTemp[i] = jacobiTransformationManager.NValuesMatrix[index, i];
             }
 
-        }
-
-        protected double [,] MultiplyTwoVectors(double[] vector, double[] transposedVector)
-        {
-            double value;
-            double[,] result = new double[4, 4];
-
-            for (int i = 0; i < vector.Length; i++)
-            {
-                value = vector[i];
-
-                for (int j = 0; j < vector.Length; j++)
-                {
-                    result[i, j] = value * transposedVector[j];
-                }
-            }
-
-            return result;
-        }
-
-        protected double[,] MultiplyNumberAndMatrix(double value, double[,] matrix)
-        {
-
-            for (int i = 0; i < 4; i++)
-            { 
-                for(int j=0; j<4; j++)
-                {
-                    matrix[i, j] = value * matrix[i, j];
-                }
-            }
-
-            return matrix;
-        }
-        protected double[] FillVectorByValue(double[] vector, double value)
-        {
-            for (int i = 0; i < vector.Length; i++)
-            {
-                vector[i] = value;
-            }
-
-            return vector;
-        }
-
-        protected double[] MultiplyNumberAndVector(double value, double[] vector)
-        {
-
-            for (int i = 0; i < 4; i++)
-            {
-                vector[i] = vector[i] * value;
-            }
-
-            return vector;
-        }
-
-
-        protected double[,] SumTwoMatrices(double[,] internalX, double[,] internalY, int sizeX, int sizeY)
-        {
-            double[,] result = internalX;
-            
-            for (int i = 0; i < sizeX; i++)
-            {
-                for (int j = 0; j < sizeY; j++)
-                {
-                    result[i, j] = internalX[i, j] + internalY[i, j];
-                }
-            }
-
-            return result;
-        }
-
-        protected double[] SumTwoVectors(double[] internalX, double[] internalY)
-        {
-            double[] result = internalX;
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = internalX[i] + internalY[i];
-            }
-
-            return result;
         }
 
         private double[,] CalculateInternalMatrices(double[] tempX, double[] tempY, double[] transposedX, double[] transposedY, double factor)

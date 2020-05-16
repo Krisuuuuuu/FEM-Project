@@ -1,5 +1,4 @@
-﻿using FEM_Project.Classes.Calculators;
-using FEM_Project.Classes.Tools;
+﻿using FEM_Project.Classes.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +112,7 @@ namespace FEM_Project.Classes
             }
 
             AggregateLocalMatricesAndVectors();
-            equationEvaluator.EvaluateEquation(grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector, grid.GlobalPVector.Length);
+            //equationEvaluator.EvaluateEquation(grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector, grid.GlobalPVector.Length);
             PrintResults();
         }
 
