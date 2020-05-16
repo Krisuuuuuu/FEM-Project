@@ -1,5 +1,4 @@
-﻿using FEM_Project.Classes.Calculators;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -115,7 +114,7 @@ namespace FEM_Project.Classes
             double[,] result = CreateZerosMatrix(4, 4);
 
             result = SumTwoMatrices(tempXMatrix, tempYMatrix, 4, 4);
-            result = MultiplyNumberAndMatrix(factor, result);
+            result = MultiplyNumberAndMatrix(factor, result, 4);
             
             return result;
         }
@@ -129,11 +128,11 @@ namespace FEM_Project.Classes
 
             double[,] tempP1Matrix = MultiplyTwoVectors(tempP1, transposedP1);
             double[,] tempP2Matrix = MultiplyTwoVectors(tempP2, transposedP2);
-            tempP1Matrix = MultiplyNumberAndMatrix(p1Factor, tempP1Matrix);
-            tempP2Matrix = MultiplyNumberAndMatrix(p2Factor, tempP2Matrix);
+            tempP1Matrix = MultiplyNumberAndMatrix(p1Factor, tempP1Matrix, 4);
+            tempP2Matrix = MultiplyNumberAndMatrix(p2Factor, tempP2Matrix, 4);
 
             result = SumTwoMatrices(tempP1Matrix, tempP2Matrix, 4, 4);
-            result = MultiplyNumberAndMatrix(det, result);
+            result = MultiplyNumberAndMatrix(det, result, 4);
            
             return result;
         }
@@ -213,7 +212,7 @@ namespace FEM_Project.Classes
                 det = jacobiTransformationManager.TabOfDeterminants[i];
                 tempCMatrix = MultiplyTwoVectors(temp, tempTransposed);
                 factor = CalculateFactorForCMatrix(det);
-                tempCMatrix = MultiplyNumberAndMatrix(factor, tempCMatrix);
+                tempCMatrix = MultiplyNumberAndMatrix(factor, tempCMatrix, 4);
                 cMatrix = SumTwoMatrices(cMatrix, tempCMatrix, 4, 4);
             }
 
@@ -257,7 +256,7 @@ namespace FEM_Project.Classes
                     det = jacobiTransformationManager.TabOfDeterminantsForPVector[i];
                     FillTempVectors(jacobiTransformationManager.Edges[i], i, ref tempP1, ref tempP2);
                     tempPVector = CalculateInternalVector(tempP1, tempP2, twoPointsGaussianFactors, det);
-                    pVector = SumTwoVectors(pVector, tempP1);
+                    pVector = SumTwoVectors(pVector, tempPVector);
                 }
             }
 

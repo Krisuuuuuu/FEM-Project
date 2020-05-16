@@ -19,21 +19,23 @@ namespace FEM_Project.Classes
         }
         protected double[] MultiplyNumberAndVector(double value, double[] vector)
         {
+            double[] result = new double[vector.Length];
 
             for (int i = 0; i < 4; i++)
             {
-                vector[i] = vector[i] * value;
+                result[i] = vector[i] * value;
             }
 
-            return vector;
+            return result;
         }
         protected double[] DivideVectorByNumber(double value, double[] vector)
         {
+            double[] result = new double[vector.Length];
             try
             {
                 for (int i = 0; i < vector.Length; i++)
                 {
-                    vector[i] = vector[i] / value;
+                    result[i] = vector[i] / value;
                 }
             }
             catch (DivideByZeroException)
@@ -41,12 +43,12 @@ namespace FEM_Project.Classes
                 Console.WriteLine("Error. Dividing by zero.");
             }
 
-            return vector;
+            return result;
         }
 
         protected double[] SumTwoVectors(double[] internalX, double[] internalY)
         {
-            double[] result = internalX;
+            double[] result = new double[internalX.Length];
 
             for (int i = 0; i < result.Length; i++)
             {

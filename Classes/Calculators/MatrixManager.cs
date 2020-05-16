@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FEM_Project.Classes.Calculators
+namespace FEM_Project.Classes
 {
     public abstract class MatrixManager : VectorManager
     {
@@ -22,29 +22,32 @@ namespace FEM_Project.Classes.Calculators
 
             return result;
         }
-        protected double[,] MultiplyNumberAndMatrix(double value, double[,] matrix)
+        protected double[,] MultiplyNumberAndMatrix(double value, double[,] matrix, int size)
         {
+            double[,] result = new double[size, size];
 
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    matrix[i, j] = value * matrix[i, j];
+                    result[i, j] = value * matrix[i, j];
                 }
             }
 
-            return matrix;
+            return result;
         }
 
         protected double[,] DivideMatrixByNumber(double[,] matrix, int size, double value)
         {
+            double[,] result = new double[size, size];
+
             try
             {
                 for (int i = 0; i < size; i++)
                 {
                     for (int j = 0; j < size; j++)
                     {
-                        matrix[i, j] = matrix[i, j] / value;
+                        result[i, j] = matrix[i, j] / value;
                     }
                 }
             }
@@ -53,12 +56,12 @@ namespace FEM_Project.Classes.Calculators
                 Console.WriteLine("Error. Dividing by zero.");
             }
 
-            return matrix;
+            return result;
         }
 
         protected double[,] SumTwoMatrices(double[,] internalX, double[,] internalY, int sizeX, int sizeY)
         {
-            double[,] result = internalX;
+            double[,] result = CreateZerosMatrix(sizeX, sizeY);
 
             for (int i = 0; i < sizeX; i++)
             {

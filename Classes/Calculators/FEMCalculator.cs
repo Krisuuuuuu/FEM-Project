@@ -38,7 +38,6 @@ namespace FEM_Project.Classes
                 grid = new Grid(globalData.NodesNumber, globalData.ElementsNumber, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 matrixCalculator = new MatrixCalculator(globalData.Conductivity, globalData.Alpha, globalData.SpecificHeat,
                     globalData.Density, globalData.AmbientTemperature);
-                equationEvaluator = new EquationEvaluator(globalData.SimulationTime, globalData.Step, globalData.InitialTemperature);
                 gridManager.CalculateDistance(globalData.Width, globalData.Height, globalData.HeightNodesNumber, globalData.WidthNodesNumber);
                 gridManager.GenerateGrid(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.Width, globalData.Height);
                 gridManager.AssignNodesToElements(grid, globalData.HeightNodesNumber, globalData.WidthNodesNumber, globalData.NodesNumber);
@@ -112,7 +111,9 @@ namespace FEM_Project.Classes
             }
 
             AggregateLocalMatricesAndVectors();
-            //equationEvaluator.EvaluateEquation(grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector, grid.GlobalPVector.Length);
+            equationEvaluator = new EquationEvaluator(globalData.SimulationTime, globalData.Step, globalData.InitialTemperature,
+                grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector);
+            equationEvaluator.EvaluateEquation(grid.GlobalPVector.Length);
             PrintResults();
         }
 
