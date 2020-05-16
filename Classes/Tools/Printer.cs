@@ -110,5 +110,28 @@ namespace FEM_Project.Classes.Tools
                 k++;
             }
         }
+
+        public void PrintResult(IDictionary<int, double> minDictionary, IDictionary<int, double> maxDictionary)
+        {
+            Console.WriteLine("\n***** Result *****\n");
+            Console.WriteLine("***** Min Temperatures *****");
+
+            int counter = 1;
+            foreach (KeyValuePair<int, double> element in minDictionary)
+            {
+                Console.WriteLine("Iteration: " + counter + " Step: " + element.Key + " Min Temperature Value: " + element.Value.ToString("F5"));
+                counter++;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("***** Max Temperatures *****");
+
+            counter = 1;
+            foreach (KeyValuePair<int, double> element in maxDictionary)
+            {
+                Console.WriteLine("Iteration: " + counter + " Step: " + element.Key + " Max Temperature Value: " + element.Value.ToString("F5"));
+                counter++;
+            }
+        }
     }
 }

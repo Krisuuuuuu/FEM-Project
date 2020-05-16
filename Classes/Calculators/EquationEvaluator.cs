@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -13,9 +15,9 @@ namespace FEM_Project.Classes
         private readonly double step;
         private readonly double initialTemperature;
 
-        private readonly double[,] constHMatrix;
-        private readonly double[,] constCMatrix;
-        private readonly double[] constPVector;
+        private Matrix<double> hMatrix;
+        private Matrix<double> cMatrix;
+        private Matrix<double> pVector;
 
         public EquationEvaluator(double simulationTime, double step, double initialTemperature, 
             double[,] globalHMatrix, double[,] globalCMatrix, double[] globalPVector)
@@ -23,29 +25,70 @@ namespace FEM_Project.Classes
             this.simulationTime = simulationTime;
             this.step = step;
             this.initialTemperature = initialTemperature;
-            constHMatrix = globalHMatrix;
-            constCMatrix = globalCMatrix;
-            constPVector = globalPVector;
+
+            CreateMatricesAndVectors(globalHMatrix, globalCMatrix, globalPVector);
         }
 
-        public void EvaluateEquation(int dimension)
+        private void CreateMatricesAndVectors(double[,] globalHMatrix, double[,] globalCMatrix, double[] globalPVector)
         {
-            double[] tVector = new double[dimension];
-            double[,] tempHMatrix;
-            double[,] tempCMatrix;
-            double[] tempPVector;
+            hMatrix = Matrix<double>.Build.Dense(globalPVector.Length, globalPVector.Length);
+            cMatrix = Matrix<double>.Build.Dense(globalPVector.Length, globalPVector.Length);
+            pVector = Matrix<double>.Build.Dense(globalPVector.Length, 1);
 
-            tVector = FillVectorByValue(tVector, initialTemperature);
+            for (int i = 0; i < globalPVector.Length; i++)
+            {
+                for (int j = 0; j < globalPVector.Length; j++)
+                {
+                    hMatrix[i, j] = globalHMatrix[i, j];
+                    cMatrix[i, j] = globalCMatrix[i, j];
+                }
+            }
 
-            for (int i = (int)step; i < simulationTime; i+=50)
+            for(int i = 0; i<globalPVector.Length; i++)
+            {
+                pVector[i, 0] = globalPVector[i];
+            }
+        }
+
+        public void EvaluateEquation(int dimension, ref IDictionary<int, double> minDictionary, ref IDictionary<int, double> maxDictionary)
+        {
+            double[] tInitValues = new double[dimension];
+            Matrix<double> tempHMatrix = Matrix<double>.Build.Dense(dimension, dimension);
+            Matrix<double> tempCMatrix = Matrix<double>.Build.Dense(dimension, dimension);
+            Matrix<double> tempPVector = Matrix<double>.Build.Dense(1, dimension);
+
+            Matrix<double> tVector = Matrix<double>.Build.Dense(1, dimension, initialTemperature);
+
+            tInitValues = FillVectorByValue(tInitValues, initialTemperature);
+
+            for (int i = 0; i < dimension; i++)
+            {
+                tempPVector[0, i] = pVector[i, 0]; 
+            }
+
+            double min = 0;
+            double max = 0;
+
+            for (int i = (int)step; i < simulationTime + step; i+=(int)step)
             {
                 //Left Side
-                tempCMatrix = DivideMatrixByNumber(constCMatrix, dimension, step);
-                tempHMatrix = SumTwoMatrices(constHMatrix, tempCMatrix, constPVector.Length, constPVector.Length);
+                cMatrix.Divide(step, tempCMatrix);
+                hMatrix.Add(tempCMatrix, tempHMatrix);
 
                 //Right Side
-                tVector = MultiplyVectorAndMatrix(tVector, tempCMatrix);
-                tempPVector = SumTwoVectors(constPVector, tVector);
+                tVector.Multiply(tempCMatrix, tVector);
+                tempPVector.Add(tVector, tVector);
+
+                //Inverse and solve
+                tempHMatrix = tempHMatrix.Inverse();
+                tVector.Multiply(tempHMatrix, tVector);
+
+                //Get min and max
+                min = tVector.Enumerate(Zeros.Include).Min();
+                max = tVector.Enumerate(Zeros.Include).Max();
+
+                minDictionary.Add(i, min);
+                maxDictionary.Add(i, max);
             }
         }     
 

@@ -20,6 +20,9 @@ namespace FEM_Project.Classes
         private double[] xNodesCoordinates;
         private double[] yNodesCoordinates;
 
+        private IDictionary<int, double> minTemperatureIterationResult;
+        private IDictionary<int, double> maxTemperatureIterationResult;
+
         public FEMCalculator()
         {
             fileManager = new FileManager();
@@ -27,6 +30,8 @@ namespace FEM_Project.Classes
             printer = new Printer();
             xNodesCoordinates = new double[4];
             yNodesCoordinates = new double[4];
+            minTemperatureIterationResult = new Dictionary<int, double>();
+            maxTemperatureIterationResult = new Dictionary<int, double>();
         }
 
         private void CreateGrid()
@@ -98,6 +103,7 @@ namespace FEM_Project.Classes
             printer.PrintMatrix(grid.GlobalHMatrix, 16, 16, "H Matrix");
             printer.PrintMatrix(grid.GlobalCMatrix, 16, 16, "C Matrix");
             printer.PrintVector(grid.GlobalPVector, grid.GlobalPVector.Length, "P Vector");
+            printer.PrintResult(minTemperatureIterationResult, maxTemperatureIterationResult);
         }
 
         public void Calculate()
@@ -113,7 +119,7 @@ namespace FEM_Project.Classes
             AggregateLocalMatricesAndVectors();
             equationEvaluator = new EquationEvaluator(globalData.SimulationTime, globalData.Step, globalData.InitialTemperature,
                 grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector);
-            equationEvaluator.EvaluateEquation(grid.GlobalPVector.Length);
+            equationEvaluator.EvaluateEquation(grid.GlobalPVector.Length, ref minTemperatureIterationResult, ref maxTemperatureIterationResult);
             PrintResults();
         }
 

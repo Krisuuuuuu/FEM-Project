@@ -15,5 +15,6 @@ namespace FEM_Project.Interfaces
         void PrintAllLocalHMatrices(Element[] elements);
         void PrintAllLocalCMatrices(Element[] elements);
         void PrintAllLocalPVectors(Element[] elements);
+        void PrintResult(IDictionary<int, double> minDictionary, IDictionary<int, double> maxDictionary);
     }
 }
