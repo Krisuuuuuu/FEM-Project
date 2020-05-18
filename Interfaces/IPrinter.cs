@@ -16,5 +16,6 @@ namespace FEM_Project.Interfaces
         void PrintAllLocalCMatrices(Element[] elements);
         void PrintAllLocalPVectors(Element[] elements);
         void PrintResult(IDictionary<int, double> minDictionary, IDictionary<int, double> maxDictionary);
+        void PrintSimulationTime(TimeSpan time);
     }
 }

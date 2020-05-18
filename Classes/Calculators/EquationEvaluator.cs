@@ -68,6 +68,12 @@ namespace FEM_Project.Classes
 
             double min = 0;
             double max = 0;
+            int counter = 1;
+
+            Console.WriteLine("***** Simulation *****");
+            Console.WriteLine("Simulation is starting... \n");
+            Console.WriteLine("Parameters: Duration[s]: " + simulationTime + " Step[s]: " + step + " Initial temperature[°C]: " + initialTemperature 
+                + "\n");
 
             for (int i = (int)step; i < simulationTime + step; i+=(int)step)
             {
@@ -89,7 +95,13 @@ namespace FEM_Project.Classes
 
                 minDictionary.Add(i, min);
                 maxDictionary.Add(i, max);
+
+                Console.WriteLine("Iteration: " + counter + " Step[s]: " + i + " Min Temperature[°C]: " + min.ToString("F5")
+                    + " Max Temperature[°C]: " + max.ToString("F5"));
+                counter++;
             }
+
+            Console.WriteLine();
         }     
 
     }

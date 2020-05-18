@@ -119,7 +119,7 @@ namespace FEM_Project.Classes.Tools
             int counter = 1;
             foreach (KeyValuePair<int, double> element in minDictionary)
             {
-                Console.WriteLine("Iteration: " + counter + " Step: " + element.Key + " Min Temperature Value: " + element.Value.ToString("F5"));
+                Console.WriteLine("Iteration: " + counter + " Step[s]: " + element.Key + " Min Temperature Value[°C]: " + element.Value.ToString("F5"));
                 counter++;
             }
 
@@ -129,9 +129,16 @@ namespace FEM_Project.Classes.Tools
             counter = 1;
             foreach (KeyValuePair<int, double> element in maxDictionary)
             {
-                Console.WriteLine("Iteration: " + counter + " Step: " + element.Key + " Max Temperature Value: " + element.Value.ToString("F5"));
+                Console.WriteLine("Iteration: " + counter + " Step[s]: " + element.Key + " Max Temperature Value[°C]: " + element.Value.ToString("F5"));
                 counter++;
             }
+            Console.WriteLine();
+        }
+
+        public void PrintSimulationTime(TimeSpan time)
+        {
+            Console.WriteLine("\nSimulation time[s]: " + time.TotalSeconds);
+            Console.WriteLine();
         }
     }
 }

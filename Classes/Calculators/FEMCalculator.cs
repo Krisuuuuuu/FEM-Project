@@ -1,6 +1,7 @@
 ﻿using FEM_Project.Classes.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -19,9 +20,12 @@ namespace FEM_Project.Classes
         private EquationEvaluator equationEvaluator;
         private double[] xNodesCoordinates;
         private double[] yNodesCoordinates;
+        private Stopwatch stopwatch;
 
         private IDictionary<int, double> minTemperatureIterationResult;
         private IDictionary<int, double> maxTemperatureIterationResult;
+
+        private TimeSpan simulationTime;
 
         public FEMCalculator()
         {
@@ -32,6 +36,7 @@ namespace FEM_Project.Classes
             yNodesCoordinates = new double[4];
             minTemperatureIterationResult = new Dictionary<int, double>();
             maxTemperatureIterationResult = new Dictionary<int, double>();
+            stopwatch = new Stopwatch();
         }
 
         private void CreateGrid()
@@ -103,11 +108,14 @@ namespace FEM_Project.Classes
             printer.PrintMatrix(grid.GlobalHMatrix, 16, 16, "H Matrix");
             printer.PrintMatrix(grid.GlobalCMatrix, 16, 16, "C Matrix");
             printer.PrintVector(grid.GlobalPVector, grid.GlobalPVector.Length, "P Vector");
-            printer.PrintResult(minTemperatureIterationResult, maxTemperatureIterationResult);
+            //printer.PrintResult(minTemperatureIterationResult, maxTemperatureIterationResult);
+            printer.PrintSimulationTime(simulationTime);
         }
 
         public void Calculate()
         {
+            stopwatch.Start();
+
             CreateGrid();
 
             for(int i=0; i<grid.Elements.Length; i++)
@@ -120,7 +128,12 @@ namespace FEM_Project.Classes
             equationEvaluator = new EquationEvaluator(globalData.SimulationTime, globalData.Step, globalData.InitialTemperature,
                 grid.GlobalHMatrix, grid.GlobalCMatrix, grid.GlobalPVector);
             equationEvaluator.EvaluateEquation(grid.GlobalPVector.Length, ref minTemperatureIterationResult, ref maxTemperatureIterationResult);
+
+            stopwatch.Stop();
+            simulationTime = stopwatch.Elapsed;
+            
             PrintResults();
+
         }
 
     }
